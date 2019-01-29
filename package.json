@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "author": "Jairo Rondon <jrondon@weknowinc.com>",
   "keywords": [
-    "gatsby", "theme", "drupal"
+    "gatsby",
+    "theme",
+    "drupal"
   ],
   "license": "MIT",
   "scripts": {
