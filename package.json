@@ -1,7 +1,7 @@
 {
   "name": "@weknow/gatsby-theme-drupal-boina",
   "description": "A Gatsby Theme for the Gatsby Boina Starter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Jairo Rondon <jrondon@weknowinc.com>",
   "keywords": [
     "gatsby",
@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@weknow/gatsby-remark-drupal": "^0.3.2",
+    "@weknow/gatsby-remark-twitter": "^0.2.1",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "css-loader": "^2.1.1",
@@ -43,6 +44,8 @@
     "gatsby-plugin-sass": "^2.0.11",
     "gatsby-plugin-sharp": "^2.0.35",
     "gatsby-remark-copy-images": "^0.2.1",
+    "gatsby-remark-embed-gist": "^1.1.7",
+    "gatsby-remark-embed-video": "^1.7.1",
     "gatsby-remark-external-links": "0.0.4",
     "gatsby-remark-images": "^3.0.11",
     "gatsby-remark-prismjs": "^3.2.8",
