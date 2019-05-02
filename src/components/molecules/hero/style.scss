@@ -28,7 +28,36 @@
     width: 100%;
     height: 100%;
     opacity: .6;
-    background-color: color(primary);
+    &--purple {
+      background-color: color(primary);
+    }
+    &--red {
+      background-color: color(alternative);
+    }
+    &--blue {
+      background-color: color(info);
+    }
+    &--orange {
+      background-color: color(error);
+    }
+    &--red-purple-diagonal {
+      background: linear-gradient(-45deg, color(alternative) 0%, color(primary) 100%);
+    }
+    &--orange-red-diagonal {
+      background: linear-gradient(-45deg, color(error) 0%, color(alternative) 100%);
+    }
+    &--purple-blue {
+      background: linear-gradient(180deg, color(primary) 0%, color(info) 100%);
+    }
+    &--red-orange {
+      background: linear-gradient(180deg, color(alternative) 0%, color(error) 100%);
+    }
+    &--blue-orange {
+      background: linear-gradient(180deg, color(info) 0%, color(error) 100%);
+    }
+    &--blue-red-diagonal {
+      background: linear-gradient(-45deg, color(info) 0%, color(alternative) 100%);
+    }
   }
   &__content{
     position: relative;
