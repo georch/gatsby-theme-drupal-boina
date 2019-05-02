@@ -1,7 +1,7 @@
 {
   "name": "@weknow/gatsby-theme-drupal-boina",
   "description": "A Gatsby Theme for the Gatsby Boina Starter",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "Jairo Rondon <jrondon@weknowinc.com>",
   "keywords": [
     "gatsby",
