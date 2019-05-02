@@ -12,7 +12,7 @@ const Hero = ({
         <Img fluid={image} alt={`Hero image for: ${title}`} style={{ minHeight: '25rem' }} imgStyle={{ minHeight: '25rem' }} />
       </div>
     )}
-    <div className="c-hero__cover" style={{ backgroundColor: color }} />
+    <div className={`c-hero__cover c-hero__cover--${color}`} />
     <div className="c-hero__content cell small-11 medium-10 large-6 grid-x align-center-middle u-text-align-center">
       <h2 className="cell">{title}</h2>
       {!tagline ? null : <h3 className="cell c-hero__tagline">{tagline}</h3>}
