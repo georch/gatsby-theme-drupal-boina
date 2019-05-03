@@ -1,0 +1,6 @@
+- id: gatsby
+  desc: Entries related to Gatsby
+  url: 'gatsby'
+- id: drupal
+  desc: Entries related to Drupal
+  url: 'drupal'
