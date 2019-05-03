@@ -36,7 +36,7 @@ class TagsPage extends Component {
       <Layout darkMenu
         postUrl={`${domain}/tags${tagPath}`}
         postTitle={`Tag: ${tagTitle}`}
-        postDesc={this.props.data.allSiteSettingEntitySite.edges[0].node.field_description}
+        postDesc={this.props.data.siteMetadata.settings.field_description}
         postDate={dateFormat(new Date(), 'MMMM Do, YYYY')}
       >
         <div className="c-tags u-push-top--inside--9x u-push-bottom--inside--4x">
@@ -87,65 +87,30 @@ export const query = graphql`
     site{
       siteMetadata{
         domain
-      }
-    }
-    allSiteSettingEntitySite {
-      edges {
-        node {
+        settings {
           field_name
           field_slogan
           field_description
         }
       }
     }
-    taxonomyTermTags( path: {alias: {eq: $slug}} ){
-      id
-      name
-    	path{
-        alias
-      }
-    }
-    allNodeArticle(
-      filter:{
-        relationships:{
-          field_tags:{
-            elemMatch: {
-              path: {alias: {eq: $slug}}
-            }
-          }
-        }
-      }
-      sort: {
-        fields: created, order: DESC
-      }
-    ){
+    allMarkdownRemark(
+      sort: { fields: [frontmatter___date], order: DESC }
+      limit: 1000
+    ) {
       edges {
         node {
-          id
-          title
-          path {
-            alias
-          }
+          excerpt
           fields {
             slug
-            created_formatted
-            markdownBody {
-              childMarkdownRemark {
-                excerpt
-              }
-            }
           }
-          relationships {
-            field_image {
-              relationships {
-                field_media_image {
-                  localFile {
-                    childImageSharp {
-                      fluid(maxWidth: 600, maxHeight: 400, cropFocus: CENTER) {
-                        ...GatsbyImageSharpFluid
-                      }
-                    }
-                  }
+          frontmatter {
+            title
+            path
+            image {
+              childImageSharp {
+                fluid {
+                  src
                 }
               }
             }

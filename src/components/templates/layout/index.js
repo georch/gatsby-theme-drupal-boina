@@ -53,11 +53,7 @@ class Layout extends Component {
             siteMetadata {
               title
               domain
-            }
-          }
-          allSiteSettingEntitySite {
-            edges {
-              node {
+              settings {
                 field_name
                 field_footer
                 field_keywords
@@ -69,7 +65,7 @@ class Layout extends Component {
         }
         `}
         render={data => {
-          const {field_name, field_footer, field_twitter_handle } = data.allSiteSettingEntitySite.edges[0].node
+          const {field_name, field_footer, field_twitter_handle } = data.siteMetadata.settings
           const postData = {
             title: this.props.postTitle,
             description: this.props.postDesc,

@@ -8,26 +8,27 @@ const Disqus = ({ articleId, title }) => {
     identifier: articleId,
     title
   };
-  return (<StaticQuery
-    query={graphql`{
-      allSiteSettingEntitySite {
-        edges {
-          node {
-            field_disqus_shortname
+  return (
+    <StaticQuery
+      query={graphql`{
+        site {
+          siteMetadata {
+            settings {
+              field_disqus_shortname
+            }
           }
         }
       }
-    }
-    `}
-    render={(data) => {
-      const { field_disqus_shortname: disqusShortName } = data.allSiteSettingEntitySite.edges[0].node;
-      return (
-        <div className="c-disqus cell auto align-self-middle align-self-center">
-          <DiscussionEmbed shortname={disqusShortName} config={disqusConfig} />
-        </div>
-      );
-    }}
-  />
+      `}
+      render={(data) => {
+        const { field_disqus_shortname: disqusShortName } = data.site.siteMetadata.settings;
+        return (
+          <div className="c-disqus cell auto align-self-middle align-self-center">
+            <DiscussionEmbed shortname={disqusShortName} config={disqusConfig} />
+          </div>
+        );
+      }}
+    />
   );
 };
 

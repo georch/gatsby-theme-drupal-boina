@@ -14,8 +14,8 @@ const Page = ({ data }) => {
       showFooterCta
       darkMenu
       postUrl={domain}
-      postTitle={data.allSiteSettingEntitySite.edges[0].node.field_name}
-      postDesc={data.allSiteSettingEntitySite.edges[0].node.field_description}
+      postTitle={data.site.siteMetadata.settings.field_name}
+      postDesc={data.site.siteMetadata.settings.field_description}
       postDate={dateFormat(new Date(), 'MMMM Do, YYYY')}
       postImage={`${domain}${data.nodePage.relationships.field_image.relationships.field_media_image.localFile.childImageSharp.fluid.src}`}
     >
@@ -27,7 +27,7 @@ const Page = ({ data }) => {
                 fluid={
                   data.nodePage.relationships.field_image.relationships.field_media_image.localFile.childImageSharp.fluid
                 }
-                alt={data.allSiteSettingEntitySite.edges[0].node.field_name}
+                alt={data.site.siteMetadata.settings.field_name}
               />
             </div>
             <div className="cell medium-6 small-11 large-6">
@@ -47,47 +47,29 @@ export const query = graphql`
     site{
       siteMetadata{
         domain
-      }
-    }
-    allSiteSettingEntitySite {
-      edges {
-        node {
+        settings {
           field_name
           field_slogan
           field_description
         }
       }
     }
-    nodePage(fields:{slug:{eq:$slug}}){
-      title
-      path {
-        alias
+    markdownRemark(fields:{slug:{eq:$slug}}){
+      html
+      frontmatter {
+        title
+        path
+        image {
+          childImageSharp {
+            fluid {
+              src
+            }
+          }
+        }
       }
       fields {
         slug
         created_formatted
-        markdownBody {
-          childMarkdownRemark {
-            html
-            rawMarkdownBody
-          }
-        }
-      }
-      relationships {
-        field_image {
-          relationships {
-            field_media_image {
-              localFile {
-                publicURL
-                childImageSharp {
-                  fluid(maxWidth: 520 maxHeight: 520, cropFocus: CENTER) {
-                    ...GatsbyImageSharpFluid
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     }
   }

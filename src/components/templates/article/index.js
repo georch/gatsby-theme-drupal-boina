@@ -26,7 +26,7 @@ const ArticlePage = ({ data }) => {
         title={data.nodeArticle.title}
         image={data.nodeArticle.relationships.field_image.relationships.field_media_image.localFile.childImageSharp.fluid}
         color={data.nodeArticle.field_overlay_color}
-        info={`By ${data.allSiteSettingEntitySite.edges[0].node.field_name} ● ${data.allSiteSettingEntitySite.edges[0].node.field_slogan} | ${data.nodeArticle.fields.created_formatted}`}
+        info={`By ${data.site.siteMetadata.settings.field_name} ● ${data.site.siteMetadata.settings.field_slogan} | ${data.nodeArticle.fields.created_formatted}`}
       />
       <div className="c-article u-push-top--inside--4x u-push-bottom--inside--4x">
         <div className="grid-container align-center grid-x">
@@ -45,7 +45,7 @@ const ArticlePage = ({ data }) => {
                 ))
             }
             </div>
-            <Share shareUrl={`${domain}${data.nodeArticle.path.alias}`} shareTitle={data.nodeArticle.title} sharehandler={data.allSiteSettingEntitySite.edges[0].node.field_twitter_handle} />
+            <Share shareUrl={`${domain}${data.nodeArticle.path.alias}`} shareTitle={data.nodeArticle.title} sharehandler={data.site.siteMetadata.settings.field_twitter_handle} />
           </div>
           <div className="cell small-11 medium-12 large-12">
             {!data.nodeArticle.relationships.field_related_post ? null : (
@@ -89,86 +89,31 @@ export const query = graphql`
     site{
       siteMetadata{
         domain
-      }
-    }
-    allSiteSettingEntitySite {
-      edges {
-        node {
+        settings {
           field_name
           field_slogan
           field_twitter_handle
         }
       }
     }
-    nodeArticle(fields: { slug: { eq: $slug } }) {
-      title
-      path {
-        alias
+    markdownRemark(fields: { slug: { eq: $slug } }) {
+      html
+      frontmatter {
+        title
+        resume
+        overlay_color
+        author
+        image {
+          childImageSharp {
+            fluid {
+              src
+            }
+          }
+        }
       }
-      field_overlay_color
       fields {
         slug
         created_formatted
-        markdownBody {
-          childMarkdownRemark {
-            html
-            rawMarkdownBody
-            excerpt
-          }
-        }
-      }
-      relationships {
-        field_tags{
-          name
-          path {
-            alias
-          }
-        }
-        field_image {
-          relationships {
-            field_media_image {
-              localFile {
-                publicURL
-                childImageSharp {
-                  fluid(maxWidth: 1440, maxHeight: 560, cropFocus: CENTER) {
-                    ...GatsbyImageSharpFluid
-                  }
-                }
-              }
-            }
-          }
-        }
-        field_related_post {
-          id
-          title
-          field_resume
-          path {
-            alias
-          }
-          fields {
-            created_formatted
-            markdownBody {
-              childMarkdownRemark {
-                excerpt
-              }
-            }
-          }
-          relationships {
-            field_image {
-              relationships {
-                field_media_image {
-                  localFile {
-                    childImageSharp {
-                      fluid(maxWidth: 600, maxHeight: 400, cropFocus: CENTER) {
-                        ...GatsbyImageSharpFluid
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     }
   }
