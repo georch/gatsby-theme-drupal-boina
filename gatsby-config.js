@@ -9,21 +9,62 @@ dotenv.config({
 module.exports = {
   siteMetadata: {
     title: `${process.env.SITE_NAME}`,
-    domain: `${process.env.PROJECT_URL}`
+    domain: `${process.env.PROJECT_URL}`,
+    settings: {
+      field_disqus_shortname: 'disqus',
+      field_name: 'name',
+      field_slogan: 'slogan',
+      field_twitter_handle: 'twitter',
+      field_footer: 'footer',
+      field_keywords: 'keywords',
+      field_description: 'description'
+    }
   },
+  // mapping: {
+  //   'MarkdownRemark.frontmatter.author': 'AuthorYaml',
+  //   'MarkdownRemark.frontmatter.tags': 'TagsYaml'
+  // },
   plugins: [
-    {
-      resolve: 'gatsby-source-drupal',
-      options: {
-        baseUrl: `${process.env.DRUPAL_HOST}`,
-        apiBase: 'api'
-      }
-    },
+    // {
+    //   resolve: 'gatsby-source-drupal',
+    //   options: {
+    //     baseUrl: `${process.env.DRUPAL_HOST}`,
+    //     apiBase: 'api'
+    //   }
+    // },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
         path: `${__dirname}/static`,
         name: 'static_images'
+      }
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        path: `${__dirname}/src/content/data`,
+        name: 'data'
+      }
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        path: `${__dirname}/src/content/assets`,
+        name: 'assets'
+      }
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        path: `${__dirname}/src/content/articles`,
+        name: 'articles'
+      }
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        path: `${__dirname}/src/content/pages`,
+        name: 'pages'
       }
     },
     'gatsby-plugin-sharp',
@@ -109,74 +150,74 @@ module.exports = {
           'Signika:100,300,400,700' // you can also specify font weights and styles
         ]
       }
-    },
-    {
-      resolve: 'gatsby-plugin-feed',
-      options: {
-        query: `
-          {
-            site {
-              siteMetadata {
-                title
-              }
-            }
-          }
-        `,
-        feeds: [
-          {
-            serialize: ({ query: { site, allNodeArticle } }) => allNodeArticle.edges.map(edge => Object.assign({}, edge.node.id, {
-              id: edge.node.id,
-              description: edge.node.fields.markdownBody.childMarkdownRemark.excerpt,
-              title: edge.node.title,
-              url: `${process.env.PROJECT_URL}/${edge.node.fields.slug}`,
-              guid: `${process.env.PROJECT_URL}/${edge.node.fields.slug}`,
-              custom_elements: [{ pubDate: edge.node.fields.created_formatted }]
-            })),
-            query: `
-            {
-              allNodeArticle(filter: {
-                relationships: {
-                  field_tags: {
-                    elemMatch: {
-                      path: {
-                        alias: {
-                          eq: "/${process.env.DRUPAL_RSS_FEED_TAG}"
-                        }
-                      }
-                    }
-                  }
-                }
-              }, sort: {
-                fields: created,
-                order: DESC
-              }) {
-                edges {
-                  node {
-                    id
-                    title
-                    path {
-                      alias
-                    }
-                    fields {
-                      slug
-                      created_formatted
-                      markdownBody {
-                        childMarkdownRemark {
-                          excerpt(pruneLength: 600)
-                          html
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            `,
-            output: `${process.env.DRUPAL_RSS_FEED_FILE}`,
-            title: `${process.env.SITE_NAME}`
-          }
-        ]
-      }
     }
+    // {
+    //   resolve: 'gatsby-plugin-feed',
+    //   options: {
+    //     query: `
+    //       {
+    //         site {
+    //           siteMetadata {
+    //             title
+    //           }
+    //         }
+    //       }
+    //     `,
+    //     feeds: [
+    //       {
+    //         serialize: ({ query: { site, allNodeArticle } }) => allNodeArticle.edges.map(edge => Object.assign({}, edge.node.id, {
+    //           id: edge.node.id,
+    //           description: edge.node.fields.markdownBody.childMarkdownRemark.excerpt,
+    //           title: edge.node.title,
+    //           url: `${process.env.PROJECT_URL}/${edge.node.fields.slug}`,
+    //           guid: `${process.env.PROJECT_URL}/${edge.node.fields.slug}`,
+    //           custom_elements: [{ pubDate: edge.node.fields.created_formatted }]
+    //         })),
+    //         query: `
+    //         {
+    //           allNodeArticle(filter: {
+    //             relationships: {
+    //               field_tags: {
+    //                 elemMatch: {
+    //                   path: {
+    //                     alias: {
+    //                       eq: "/${process.env.DRUPAL_RSS_FEED_TAG}"
+    //                     }
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }, sort: {
+    //             fields: created,
+    //             order: DESC
+    //           }) {
+    //             edges {
+    //               node {
+    //                 id
+    //                 title
+    //                 path {
+    //                   alias
+    //                 }
+    //                 fields {
+    //                   slug
+    //                   created_formatted
+    //                   markdownBody {
+    //                     childMarkdownRemark {
+    //                       excerpt(pruneLength: 600)
+    //                       html
+    //                     }
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //         `,
+    //         output: `${process.env.DRUPAL_RSS_FEED_FILE}`,
+    //         title: `${process.env.SITE_NAME}`
+    //       }
+    //     ]
+    //   }
+    // }
   ]
 };
