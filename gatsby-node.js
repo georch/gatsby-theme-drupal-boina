@@ -6,9 +6,7 @@
 
 require('babel-polyfill');
 
-const dateFormat = require('date-fns/format');
 const path = require('path');
-const _isEmpty = require('lodash/isEmpty');
 const dotenv = require('dotenv');
 
 const configPostCss = path.resolve(__dirname, './');
@@ -52,145 +50,66 @@ exports.onCreateWebpackConfig = ({
 exports.onCreateNode = ({
   node, actions
 }) => {
-  if (node.internal.type === 'node__article' || node.internal.type === 'node__page') {
-    // Fix missing fields on GraphQL schema
-    for (const prop in node) {
-      if (prop.match(/^field_.*/)) {
-        if (node[prop] === null) {
-          node[prop] = '';
-        }
-      }
-    }
-
+  if (node.internal.type === 'MarkdownRemark') {
     const { createNodeField } = actions;
     // Create a slug value as a field on the node.
     createNodeField({
       node,
       name: 'slug',
-      value: node.path.alias.substr(1)
+      value: node.frontmatter.path
     });
 
-    // Create a formatted date field on the node.
+    // Create a tags field on the node.
     createNodeField({
       node,
-      name: 'created_formatted',
-      value: dateFormat(new Date(node.created), 'MMMM Do, YYYY')
+      name: 'tags',
+      value: node.frontmatter.tags
     });
   }
 };
 
-// Implement the Gatsby API “createPages”. This is called once the
-// data layer is bootstrapped to let plugins create pages from data.
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
 
-  return new Promise((resolve, reject) => {
-    const articleTemplate = path.resolve(__dirname, './src/components/templates/article/index.js');
-    const pageTemplate = path.resolve(__dirname, './src/components/templates/page/index.js');
-    const tagsTemplate = path.resolve(__dirname, './src/components/templates/tags/index.js');
-    // page building queries
-    graphql(
-      `
-        {
-          allTaxonomyTermTags {
-            edges {
-              node {
-                name
-                id
-                path {
-                  alias
-                }
-                relationships{
-                  node__article{
-                    id
-                  }
-                }
-              }
-            }
-          }
+  const articleTemplate = path.resolve(__dirname, './src/components/templates/article/index.js');
+  // const pageTemplate = path.resolve(__dirname, './src/components/templates/page/index.js');
+  const tagsTemplate = path.resolve(__dirname, './src/components/templates/tags/index.js');
 
-          allNodeArticle {
-            edges {
-              node {
+  return graphql(
+    `
+      {
+        allMarkdownRemark {
+          edges {
+            node {
+              html
+              frontmatter {
                 title
-                path {
-                  alias
-                }
-                body {
-                  value
-                }
-                fields {
-                  slug
-                }
+                path
+              }
+              fields {
+                slug
               }
             }
           }
-
-          allNodePage {
-            edges {
-              node {
-                title
-                path {
-                  alias
-                }
-                body {
-                  value
-                }
-                fields {
-                  slug
-                  created_formatted
-                  markdownBody {
-                    childMarkdownRemark {
-                      html
-                    }
-                  }
-                }
-              }
-            }
-          }
-      
         }
-        `
-    ).then((result) => {
-      if (result.errors) {
-        reject(result.errors);
       }
-      // pages for each node__article
-      result.data.allNodeArticle.edges.forEach(({ node }) => {
-        createPage({
-          path: node.path.alias,
-          component: articleTemplate,
-          context: {
-            slug: node.fields.slug
-          }
-        });
-      });
+    `
+  ).then((result) => {
+    if (result.errors) {
+      reject(result.errors);
+    }
 
-      // pages for each node__page
-      result.data.allNodePage.edges.forEach(({ node }) => {
-        createPage({
-          path: node.path.alias,
-          component: pageTemplate,
-          context: {
-            slug: node.fields.slug
-          }
-        });
-      });
-
-      // pages for each tag-term
-      result.data.allTaxonomyTermTags.edges.forEach(({ node }) => {
-        if (!_isEmpty(node.relationships.node__article)) {
-          createPage({
-            path: `/tags${node.path.alias}`,
-            component: tagsTemplate,
-            context: {
-              slug: node.path.alias
-            }
-          });
+    // create pages
+    result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+      createPage({
+        path: node.fields.slug,
+        component: articleTemplate,
+        context: {
+          slug: node.fields.slug
         }
       });
-
-      resolve();
     });
+
+    return null;
   });
 };
