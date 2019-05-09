@@ -25,15 +25,13 @@ class Home extends Component {
 
   render() {
     const { articles } = this.state;
-    const { field_name, field_slogan, field_facebook, field_twitter, field_github, field_linkedin } = this.props.settings;
+    const { field_name, field_slogan, social_profiles } = this.props.settings;
     const imageHero = this.props.heroCover;
-    const socialLinks = {
-      facebook: field_facebook.uri, twitter:field_twitter.uri, github:field_github.uri, linkedin:field_linkedin.uri
-    }
+
     const loader = <div className="cell medium-12 align-center" key="loader">Loading ...</div>;
     return (
       <div className="c-home ">
-        <Hero title={field_name} tagline={field_slogan} image={imageHero} color="#288dc1" social={socialLinks} />
+        <Hero title={field_name} tagline={field_slogan} image={imageHero} color="#288dc1" social={social_profiles} />
         <div className="grid-container u-push-top--inside--4x u-push-bottom--inside--4x">
           <InfiniteScroll className="grid-x grid-margin-x" key="inf-scroll"
             pageStart={0}
@@ -44,12 +42,12 @@ class Home extends Component {
               {articles.map(({ node }) => (
                 <div className="cell medium-6 small-12 large-6 xlarge-6 u-push-bottom" key={node.id}>
                   <ArticleTeaser
-                    title={node.title}
-                    image={node.relationships.field_image.relationships.field_media_image.localFile.childImageSharp.fluid}
-                    resume={node.field_resume}
-                    excerpt={node.fields.markdownBody.childMarkdownRemark.excerpt}
-                    link={node.path.alias}
-                    date={node.fields.created_formatted}
+                    title={node.frontmatter.title}
+                    image={node.frontmatter.image.childImageSharp.fluid}
+                    resume={node.excerpt}
+                    excerpt={node.excerpt}
+                    link={node.frontmatter.path}
+                    date={node.frontmatter.date}
                   />
                 </div>
               ))}

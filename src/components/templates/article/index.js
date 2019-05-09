@@ -28,7 +28,7 @@ const ArticlePage = ({ data }) => {
         title={info.frontmatter.title}
         image={info.frontmatter.image.childImageSharp.fluid}
         color={info.frontmatter.overlay_color}
-        info={`By ${info.frontmatter.author.name} ● ${data.site.siteMetadata.settings.field_slogan} | ${info.frontmatter.date}`}
+        info={`By ${info.frontmatter.author.name} ● ${data.dataYaml.slogan} | ${info.frontmatter.date}`}
       />
       <div className="c-article u-push-top--inside--4x u-push-bottom--inside--4x">
         <div className="grid-container align-center grid-x">
@@ -39,7 +39,7 @@ const ArticlePage = ({ data }) => {
               (!info.frontmatter.tags) ? null
                 : info.frontmatter.tags.map((tag, index) => (
                   <span key={tag.url}>
-                    <Link key={tag.url} to={`/tags${tag.url}`}>
+                    <Link key={tag.url} to={`/tags/${tag.url}`}>
                       {`${tag.id}`}
                     </Link>
                     {(index + 1 !== info.frontmatter.tags.length) ? <span>,&nbsp;</span> : ''}
@@ -47,7 +47,7 @@ const ArticlePage = ({ data }) => {
                 ))
             }
             </div>
-            <Share shareUrl={`${domain}${info.fields.slug}`} shareTitle={info.frontmatter.title} sharehandler={data.site.siteMetadata.settings.field_twitter_handle} />
+            <Share shareUrl={`${domain}${info.fields.slug}`} shareTitle={info.frontmatter.title} sharehandler={data.dataYaml.twitter_handle} />
           </div>
           <div className="cell small-11 medium-12 large-12">
             {/* {!data.markdownRemark.relationships.field_related_post ? null : (
@@ -88,15 +88,14 @@ export default ArticlePage;
 
 export const query = graphql`
   query($slug: String!) {
-    site{
-      siteMetadata{
+    site {
+      siteMetadata {
         domain
-        settings {
-          field_name
-          field_slogan
-          field_twitter_handle
-        }
       }
+    }
+    dataYaml {
+      slogan
+      twitter_handle
     }
     markdownRemark(fields: { slug: { eq: $slug } }) {
       html

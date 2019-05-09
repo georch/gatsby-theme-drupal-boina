@@ -13,7 +13,7 @@ class TagsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      articles: _slice(props.data.allNodeArticle.edges, 0, 6),
+      articles: _slice(props.data.allMarkdownRemark.edges, 0, 6),
       hasMoreItems: true,
     };
   }
@@ -22,21 +22,21 @@ class TagsPage extends Component {
     const allArticles = _slice(this.props.articles, 0, 6*(page+1));
     this.setState({
       articles: allArticles,
-      hasMoreItems: (this.props.data.allNodeArticle.edges.length>=6*page+1)? true : false
+      hasMoreItems: (this.props.data.allMarkdownRemark.edges.length >= 6*page+1) ? true : false
     })
   }
 
   render() {
-    const articles = this.props.data.allNodeArticle.edges;
+    const articles = this.props.data.allMarkdownRemark.edges;
     const tagTitle = this.props.data.taxonomyTermTags.name;
     const tagPath = this.props.data.taxonomyTermTags.path.alias;
-    const {domain} = this.props.data.site.siteMetadata;
+    const { domain } = this.props.data.site.siteMetadata;
     const loader = <div className="cell medium-12 align-center" key="loader">Loading ...</div>;
     return (
       <Layout darkMenu
-        postUrl={`${domain}/tags${tagPath}`}
+        postUrl={`${domain}/tags/${tagPath}`}
         postTitle={`Tag: ${tagTitle}`}
-        postDesc={this.props.data.siteMetadata.settings.field_description}
+        postDesc={this.props.data.dataYaml.description}
         postDate={dateFormat(new Date(), 'MMMM Do, YYYY')}
       >
         <div className="c-tags u-push-top--inside--9x u-push-bottom--inside--4x">
@@ -44,22 +44,22 @@ class TagsPage extends Component {
             <h1 className="c-tags__title cell medium-8 large-8 u-text--primary align-center grid-x">{tagTitle}</h1>
           </div>
           <div className="grid-container align-center">
-          {!articles?null:
+          { !articles ? null :
             <InfiniteScroll className="grid-x grid-margin-x"
               pageStart={0}
               loadMore={this.loadItems.bind(this)}
               hasMore={this.state.hasMoreItems}
               loader={loader}
             >
-              {articles.map(({ node }) => (
+              { articles.map(({ node }) => (
                 <div className="cell medium-6 small-12 large-6 xlarge-6 u-push-bottom" key={node.id}>
                   <ArticleTeaser
-                    title={node.title}
-                    image={node.relationships.field_image.relationships.field_media_image.localFile.childImageSharp.fluid}
-                    resume={node.field_resume}
-                    excerpt={node.fields.markdownBody.childMarkdownRemark.excerpt}
-                    link={node.path.alias}
-                    date={node.fields.created_formatted}
+                    title={node.frontmatter.title}
+                    image={node..frontmatter.image.childImageSharp.fluid}
+                    resume={node.excerpt}
+                    excerpt={node.excerpt}
+                    link={node.frontmatter.path}
+                    date={node.frontmatter.date}
                   />
                 </div>
               ))}
@@ -83,21 +83,23 @@ TagsPage.defaultProps = {
 export default TagsPage;
 
 export const query = graphql`
-  query($slug: String!) {
-    site{
-      siteMetadata{
+  query($tag: String!) {
+    site {
+      siteMetadata {
         domain
-        settings {
-          field_name
-          field_slogan
-          field_description
-        }
       }
     }
+    dataYaml {
+      name
+      slogan
+      description
+    }
     allMarkdownRemark(
+      filter: { frontmatter: { tags: { in: [$tag] } } }
       sort: { fields: [frontmatter___date], order: DESC }
       limit: 1000
     ) {
+      totalCount
       edges {
         node {
           excerpt
@@ -107,6 +109,7 @@ export const query = graphql`
           frontmatter {
             title
             path
+            date
             image {
               childImageSharp {
                 fluid {
@@ -120,4 +123,3 @@ export const query = graphql`
     }
   }
 `;
-

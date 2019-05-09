@@ -9,16 +9,7 @@ dotenv.config({
 module.exports = {
   siteMetadata: {
     title: `${process.env.SITE_NAME}`,
-    domain: `${process.env.PROJECT_URL}`,
-    settings: {
-      field_disqus_shortname: 'disqus',
-      field_name: 'name',
-      field_slogan: 'slogan',
-      field_twitter_handle: 'twitter',
-      field_footer: 'footer',
-      field_keywords: 'keywords',
-      field_description: 'description'
-    }
+    domain: `${process.env.PROJECT_URL}`
   },
   mapping: {
     'MarkdownRemark.frontmatter.author': 'AuthorYaml',

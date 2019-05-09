@@ -53,26 +53,26 @@ class Layout extends Component {
             siteMetadata {
               title
               domain
-              settings {
-                field_name
-                field_footer
-                field_keywords
-                field_description
-                field_twitter_handle
-              }
             }
+          }
+          dataYaml {
+            name
+            keywords
+            description
+            footer
+            twitter_handle
           }
         }
         `}
         render={data => {
-          const {field_name, field_footer, field_twitter_handle } = data.site.siteMetadata.settings
+          const {name, footer, twitter_handle } = data.dataYaml;
           const postData = {
             title: this.props.postTitle,
             description: this.props.postDesc,
             slug:this.props.postSlug,
             url:this.props.postUrl,
             datePublished: this.props.postDate,
-            twitterHandler: field_twitter_handle,
+            twitterHandler: twitter_handle,
             siteUrl: data.site.siteMetadata.domain
           };
 
@@ -86,11 +86,11 @@ class Layout extends Component {
             <div className="c-layout">
               <Sidebar showSidebar={this.state.showSidebar} hideSidebar={this.handleShowSidebar} />
               <div className="cell medium-cell-block">
-                <Header scrolled={this.state.scrolledMenu} isMobile={this.state.isMobile} siteTitle={field_name} showSidebar={this.handleShowSidebar} darkMenu={this.props.darkMenu} />
+                <Header scrolled={this.state.scrolledMenu} isMobile={this.state.isMobile} siteTitle={name} showSidebar={this.handleShowSidebar} darkMenu={this.props.darkMenu} />
                 <div className="c-layout__main cell medium-cell-block">
                   {children}
                 </div>
-                <Footer showCta={this.props.showFooterCta} copyContent={field_footer} />
+                <Footer showCta={this.props.showFooterCta} copyContent={footer} />
               </div>
             </div>
           </>

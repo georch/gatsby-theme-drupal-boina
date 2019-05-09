@@ -11,17 +11,13 @@ const Disqus = ({ articleId, title }) => {
   return (
     <StaticQuery
       query={graphql`{
-        site {
-          siteMetadata {
-            settings {
-              field_disqus_shortname
-            }
-          }
+        dataYaml {
+          disqus_shortname
         }
       }
       `}
       render={(data) => {
-        const { field_disqus_shortname: disqusShortName } = data.site.siteMetadata.settings;
+        const { disqus_shortname: disqusShortName } = data.dataYaml;
         return (
           <div className="c-disqus cell auto align-self-middle align-self-center">
             <DiscussionEmbed shortname={disqusShortName} config={disqusConfig} />

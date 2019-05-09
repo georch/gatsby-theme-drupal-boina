@@ -14,10 +14,10 @@ const Page = ({ data }) => {
       showFooterCta
       darkMenu
       postUrl={domain}
-      postTitle={data.site.siteMetadata.settings.field_name}
-      postDesc={data.site.siteMetadata.settings.field_description}
+      postTitle={data.dataYaml.name}
+      postDesc={data.dataYaml.description}
       postDate={dateFormat(new Date(), 'MMMM Do, YYYY')}
-      postImage={`${domain}${data.nodePage.relationships.field_image.relationships.field_media_image.localFile.childImageSharp.fluid.src}`}
+      postImage={`${domain}${data.markdownRemark.image.childImageSharp.fluid.src}`}
     >
       <div className="c-page u-push-top--inside--9x u-push-bottom--inside--4x">
         <div className="grid-container align-center">
@@ -25,14 +25,14 @@ const Page = ({ data }) => {
             <div className="cell medium-6 small-11 large-6">
               <Img
                 fluid={
-                  data.nodePage.relationships.field_image.relationships.field_media_image.localFile.childImageSharp.fluid
+                  data.markdownRemark.image.childImageSharp.fluid
                 }
-                alt={data.site.siteMetadata.settings.field_name}
+                alt={data.dataYaml.name}
               />
             </div>
             <div className="cell medium-6 small-11 large-6">
-              <h1 className="c-page__title">{data.nodePage.title}</h1>
-              <div dangerouslySetInnerHTML={{ __html: data.nodePage.fields.markdownBody.childMarkdownRemark.html }} />
+              <h1 className="c-page__title">{data.markdownRemark.frontmatter.title}</h1>
+              <div dangerouslySetInnerHTML={{ __html: data.markdownRemark.html }} />
             </div>
           </div>
         </div>
@@ -44,17 +44,17 @@ export default Page;
 
 export const query = graphql`
   query($slug: String!) {
-    site{
-      siteMetadata{
+    site {
+      siteMetadata {
         domain
-        settings {
-          field_name
-          field_slogan
-          field_description
-        }
       }
     }
-    markdownRemark(fields:{slug:{eq:$slug}}){
+    dataYaml {
+      name
+      slogan
+      description
+    }
+    markdownRemark(fields: {slug: {eq: $slug}}) {
       html
       frontmatter {
         title
